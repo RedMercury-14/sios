@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка файлов</title>
+</head>
+<body>
+<h1>Загрузить несколько фото</h1>
+
+<form method="post" enctype="multipart/form-data" action="/upload">
+    <input type="file" name="files" accept="image/*" multiple />
+    <button type="submit">Загрузить</button>
+</form>
+
+<p th:if="${message}" th:text="${message}"></p>
+</body>
+</html>
