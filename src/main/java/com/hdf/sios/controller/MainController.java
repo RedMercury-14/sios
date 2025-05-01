@@ -1,11 +1,13 @@
 package com.hdf.sios.controller;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.*;
 import java.util.List;
 
 import jakarta.annotation.PostConstruct;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,12 +38,31 @@ public class MainController {
         }
     }
 
-
-
-
     @GetMapping("/")
-    public String uploadForm() {
+    public String uploadForm(Model model) {
+        String ipAddress = getLocalIpAddress();
+        model.addAttribute("ipAddress", ipAddress);
         return "upload";
+    }
+
+    private String getLocalIpAddress() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            return inetAddress.getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return "не удалось получить IP";
+        }
+    }
+    
+    /**
+     * Завершение прилаги.
+     * @return
+     */
+    @PostMapping("/stopApp")
+    public String stopApp() {
+        System.exit(0);
+		return null;
     }
 
     @PostMapping("/arrayUpload")
