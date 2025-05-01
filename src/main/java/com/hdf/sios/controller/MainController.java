@@ -44,8 +44,8 @@ public class MainController {
         return "upload";
     }
 
-    @PostMapping("/upload")
-    public String handleMultipleUpload(@RequestParam("files") List<MultipartFile> files, Model model) {
+    @PostMapping("/arrayUpload")
+    public String handleMultipleUploadArray(@RequestParam("files") List<MultipartFile> files, Model model) {
         if (files == null || files.isEmpty()) {
             model.addAttribute("message", "Файлы не выбраны");
             return "upload";
@@ -63,6 +63,32 @@ public class MainController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        model.addAttribute("message", "Загружено файлов: " + successCount);
+        return "upload";
+    }
+    
+    
+    
+    
+    @PostMapping("/upload")
+    public String handleMultipleUpload(@RequestParam("file") MultipartFile file, Model model) {
+        if (file == null || file.isEmpty()) {
+            model.addAttribute("message", "Файлы не выбраны");
+            return "upload";
+        }
+
+        int successCount = 0;
+        if (!file.isEmpty()) {
+            try {
+                String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                Path destination = uploadPath.resolve(filename);
+                Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+                successCount++;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 

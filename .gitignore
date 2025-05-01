@@ -1,6 +1,8 @@
 target/
 .mvn
 .settings
+bin/
+photos/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

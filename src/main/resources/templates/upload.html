@@ -1,3 +1,20 @@
+<!-- <!DOCTYPE html> -->
+<!-- <html xmlns:th="http://www.thymeleaf.org"> -->
+<!-- <head> -->
+<!--     <meta charset="UTF-8"> -->
+<!--     <title>Загрузка файлов</title> -->
+<!-- </head> -->
+<!-- <body> -->
+<!-- <h1>Загрузить несколько фото</h1> -->
+
+<!-- <form method="post" enctype="multipart/form-data" action="/upload"> -->
+<!--     <input type="file" name="files" accept="image/*" multiple /> -->
+<!--     <button type="submit">Загрузить</button> -->
+<!-- </form> -->
+
+<!-- <p th:if="${message}" th:text="${message}"></p> -->
+<!-- </body> -->
+<!-- </html> -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -7,11 +24,48 @@
 <body>
 <h1>Загрузить несколько фото</h1>
 
-<form method="post" enctype="multipart/form-data" action="/upload">
-    <input type="file" name="files" accept="image/*" multiple />
+<form id="uploadForm">
+    <input type="file" id="filesInput" name="files" accept="image/*" multiple />
     <button type="submit">Загрузить</button>
 </form>
 
-<p th:if="${message}" th:text="${message}"></p>
+<p id="status"></p>
+
+<script>
+document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // отмена стандартной отправки формы
+
+    const files = document.getElementById('filesInput').files;
+    const totalFiles = files.length;
+
+    if (totalFiles === 0) {
+        document.getElementById('status').textContent = 'Нет выбранных файлов';
+        return;
+    }
+
+    let uploaded = 0;
+    const statusElement = document.getElementById('status');
+
+    for (let i = 0; i < totalFiles; i++) {
+        const formData = new FormData();
+        formData.append('file', files[i]); // изменено с "files" на "file" для одной загрузки
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error(`Ошибка: ${response.status}`);
+
+            uploaded++;
+            statusElement.textContent = `Загружено ${uploaded} из ${totalFiles}`;
+        } catch (error) {
+            statusElement.textContent = `Ошибка при загрузке файла ${i + 1}: ${error}`;
+            break;
+        }
+    }
+});
+</script>
 </body>
 </html>
